@@ -26,16 +26,16 @@ def do_deploy(archive_path):
     if exists(archive_path) is False:
         return False
     try:
-        name_file = archive_path.split("/")[:1]
-        extend = name_file.split("-")[0]
+        name_file = archive_path.split("/")[-1]
+        extend = name_file.split(".")[0]
         path_file = "/data/web_static/releases/"
         put(archive_path, '/tmp/')
         # Make Dirrectory
-        run('mkdir -p {}{}'.format(path_file, extend))
-        run("tar -xzf /tmp/{} -C {}{}/".format(name_file, path_file, extend))
+        run('mkdir -p {}{}/'.format(path_file, extend))
+        run('tar -xzf /tmp/{} -C {}{}/'.format(name_file, path_file, extend))
         # Delete the archive from the web server
         run('rm /tmp/{}'.format(name_file))
-        run('mv (0)(1)/web_static/* (0)(1)/'.format(path_file, extend))
+        run('mv {0}{1}/web_static/* {0}{1}/'.format(path_file, extend))
         run('rm -rf {}{}/web_static'.format(path_file, extend))
         # Delete the symbolic link
         run('rm -f /data/web_static/current')
