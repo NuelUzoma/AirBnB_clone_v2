@@ -15,13 +15,13 @@ from flask import Flask
 app = Flask(__name__)
 
 
-@app.route('/', strict_slashes=False)
+@app.route('/')
 def hello():
     """The first function route, to return Hello HBNB!"""
     return "Hello HBNB!"
 
 
-@app.route('/hbnb', strict_slashes=False)
+@app.route('/hbnb')
 def hbnb():
     """The second function route, to return HBNB"""
     return "HBNB"
@@ -30,9 +30,8 @@ def hbnb():
 @app.route('/c/<text>', strict_slashes=False)
 def c_text(text):
     """The third function route, to display C with the <text> value"""
-    text.replace("_", " ")
-    return "C %s" % text
+    return "C %s" % text.replace("_", " ")
 
 
-if __name__ == "__main":
+if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
