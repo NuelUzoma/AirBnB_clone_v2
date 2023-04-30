@@ -103,3 +103,7 @@ class DBStorage:
         self.__session = scoped_session(sessionmaker(bind=self.__engine,
                                         expire_on_commit=False))
         self.__session.commit()
+
+    def close(self):
+        """Function call from self.__session"""
+        self.__session.remove()

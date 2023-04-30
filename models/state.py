@@ -10,3 +10,18 @@ class State(BaseModel, Base):
     __tablename__ = 'states'
 
     name = Column(String(128), nullable=False)
+
+    @property
+    def cities(self):
+        """Return the list of city objects from storage
+        linked to the current state"""
+        from models import storage
+        city_list = []
+        if storage.__class__.__name__ != 'DBStorage':
+            for city in storage.all(city).values():
+                if city.state_id == self.id:
+                    city_list.append(city)
+        else:
+            for city in self.cities:
+                city_list.append(city)
+        return city_list
