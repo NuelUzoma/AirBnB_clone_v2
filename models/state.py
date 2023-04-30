@@ -11,14 +11,14 @@ class State(BaseModel, Base):
 
     name = Column(String(128), nullable=False)
 
-    @property
     def cities(self):
         """Return the list of city objects from storage
         linked to the current state"""
         from models import storage
+        from models.city import City
         city_list = []
         if storage.__class__.__name__ != 'DBStorage':
-            for city in storage.all(city).values():
+            for city in storage.all(City).values():
                 if city.state_id == self.id:
                     city_list.append(city)
         else:
