@@ -15,11 +15,18 @@ H1 tag: “States”
 UL tag: with the list of all State objects present in
 DBStorage sorted by name (A->Z) tip
 LI tag: description of one State: <state.id>: <B><state.name></B>
+Make sure you have a running and valid setup_mysql_dev.sql
+in your AirBnB_clone_v2 repository (Task)
+Make sure all tables are created when you run echo "quit"
+| HBNB_MYSQL_USER=hbnb_dev
+HBNB_MYSQL_PWD=hbnb_dev_pwd HBNB_MYSQL_HOST=localhost
+HBNB_MYSQL_DB=hbnb_dev_db HBNB_TYPE_STORAGE=db ./console.py
 """
 
 
 from flask import Flask, render_template
 from models import storage
+from models.state import State
 app = Flask(__name__)
 
 
@@ -27,11 +34,13 @@ app = Flask(__name__)
 def states_list():
     """Displays a HTML Page only when it is called
     from storage.all('State')"""
-    return render_template('7-states_list.html', states=storage.all('State'))
+    states = storage.all(State)
+    s_states = sorted(states.values(), key=lambda state: state.name)
+    return render_template('7-states_list.html', states=s_states)
 
 
 @app.teardown_appcontext
-def teardown_db():
+def teardown_db(exception):
     """Closes the database again at the end of the request
     with the storage.close()"""
     storage.close()
