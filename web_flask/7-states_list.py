@@ -25,13 +25,15 @@ app = Flask(__name__)
 
 @app.route('/states_list', strict_slashes=False)
 def states_list():
-    """Displays a HTML Page only if n is an integer"""
+    """Displays a HTML Page only when it is called
+    from storage.all('State')"""
     return render_template('7-states_list.html', states=storage.all('State'))
 
 
 @app.teardown_appcontext
-def teardown_db(exception):
-    """Closes the database again at the end of the request."""
+def teardown_db():
+    """Closes the database again at the end of the request
+    with the storage.close()"""
     storage.close()
 
 
