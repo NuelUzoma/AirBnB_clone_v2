@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, ForeignKey, Column, Table
 from sqlalchemy.orm import relationship
 from models.state import State
 from models.user import User
