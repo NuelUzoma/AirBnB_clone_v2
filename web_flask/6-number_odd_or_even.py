@@ -19,13 +19,13 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', strict_slashes=False)
 def hello():
     """The first function route, to return Hello HBNB!"""
     return "Hello HBNB!"
 
 
-@app.route('/hbnb')
+@app.route('/hbnb', strict_slashes=False)
 def hbnb():
     """The second function route, to return HBNB"""
     return "HBNB"
@@ -34,10 +34,10 @@ def hbnb():
 @app.route('/c/<text>', strict_slashes=False)
 def c_text(text):
     """The third function route, to display C with the <text> value"""
-    return "C %s" % text.replace("_", " ")
+    return "C %" + text.replace("_", " ")
 
 
-@app.route('/python/', defaults={'text': 'is cool'}, strict_slashes=False)
+@app.route('/python', defaults={'text': 'is cool'}, strict_slashes=False)
 @app.route('/python/<path:text>', strict_slashes=False)
 def p_text(text):
     """The fourth function route,
@@ -48,7 +48,7 @@ def p_text(text):
 @app.route('/number/<int:n>', strict_slashes=False)
 def num(n):
     """Display <n is a number> if only n is a number"""
-    return "%d is a number" % n
+    return "{:d} is a number".format(n)
 
 
 @app.route('/number_template/<int:n>', strict_slashes=False)
@@ -63,10 +63,12 @@ def n_temp(n):
 @app.route('/number_odd_or_even/<int:n>', strict_slashes=False)
 def num_odd_or_even(n):
     """Display an HTML page if a number is even or odd"""
-    if (isinstance(n, int)):
-        return render_template('6-number_odd_or_even.html', n=n)
+    if n % 2 == 1:
+        test = 'odd'
     else:
-        return abort(404)
+        test = 'even'
+    return render_template('6-number_odd_or_even.html', n=n,
+                           test=test)
 
 
 if __name__ == "__main__":

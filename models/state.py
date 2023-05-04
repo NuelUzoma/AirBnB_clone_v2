@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 """ State Module for HBNB project """
+import models
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from models.city import City
 
 
 class State(BaseModel, Base):
@@ -11,17 +13,14 @@ class State(BaseModel, Base):
 
     name = Column(String(128), nullable=False)
 
-    def cities(self):
-        """Return the list of city objects from storage
-        linked to the current state"""
-        from models import storage
-        from models.city import City
-        city_list = []
-        if storage.__class__.__name__ != 'DBStorage':
-            for city in storage.all(City).values():
+    if models.storage_t != 'db':
+        @property
+        def cities(self):
+            """Return the list of city objects from storage
+            linked to the current state"""
+            city_list = []
+            sum_cities = models.storage.all(City)
+            for city in sum_cities.values():
                 if city.state_id == self.id:
                     city_list.append(city)
-        else:
-            for city in self.cities:
-                city_list.append(city)
-        return city_list
+            return city_list

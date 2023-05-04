@@ -19,13 +19,13 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', strict_slashes=False)
 def hello():
     """The first function route, to return Hello HBNB!"""
     return "Hello HBNB!"
 
 
-@app.route('/hbnb')
+@app.route('/hbnb', strict_slashes=False)
 def hbnb():
     """The second function route, to return HBNB"""
     return "HBNB"
@@ -34,30 +34,27 @@ def hbnb():
 @app.route('/c/<text>', strict_slashes=False)
 def c_text(text):
     """The third function route, to display C with the <text> value"""
-    return "C %s" % text.replace("_", " ")
+    return "C " + text.replace("_", " ")
 
 
-@app.route('/python/', defaults={'text': 'is cool'}, strict_slashes=False)
+@app.route('/python', defaults={'text': 'is cool'}, strict_slashes=False)
 @app.route('/python/<path:text>', strict_slashes=False)
 def p_text(text):
     """The fourth function route,
     to display Python with the <text> value provided"""
-    return "Python %s" % text.replace("_", " ")
+    return "Python " + text.replace("_", " ")
 
 
 @app.route('/number/<int:n>', strict_slashes=False)
 def num(n):
     """Display <n is a number> if only n is a number"""
-    return "%d is a number" % n
+    return "{:d} is a number".format(n)
 
 
 @app.route('/number_template/<int:n>', strict_slashes=False)
 def n_temp(n):
     """Displays a HTML Page only if n is an integer"""
-    if (isinstance(n, int)):
-        return render_template('5-number.html', n=n)
-    else:
-        return abort(404)
+    return render_template('5-number.html', n=n)
 
 
 if __name__ == "__main__":
