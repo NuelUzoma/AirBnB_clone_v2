@@ -16,9 +16,9 @@ app = Flask(__name__)
 def states_list():
     """Displays a HTML Page only when it is called
     from storage.all('State')"""
-    states = storage.all(State)
-    s_states = sorted(states.values(), key=lambda state: state.name)
-    return render_template('7-states_list.html', s_states=s_states)
+    all_states = storage.all(State)
+    s_states = sorted(all_states.values(), key=lambda state: state.name)
+    return render_template('7-states_list.html', states=s_states)
 
 
 @app.teardown_appcontext
