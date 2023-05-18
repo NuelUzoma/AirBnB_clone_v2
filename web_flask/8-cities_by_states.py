@@ -14,15 +14,16 @@ app = Flask(__name__)
 @app.route('/cities_by_states', strict_slashes=False)
 def cities_by_states():
     """Display the states and cities list"""
-    s_states = storage.all(State).values()
-    return render_template('8-cities_by_states.html', s_states=s_states)
+    all_states = storage.all(State)
+    s_states = sorted(all_states.values(), key=lambda state: state.name)
+    return render_template('8-cities_by_states.html', states=s_states)
 
 
-@app.teardown_apcontext
+@app.teardown_appcontext
 def teardown(exception):
     """This function that closes the storage on teardown"""
     storage.close()
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

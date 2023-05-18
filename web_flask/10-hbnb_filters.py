@@ -11,7 +11,6 @@ from models.amenity import Amenity
 from models import storage
 app = Flask(__name__)
 
-
 @app.route('/hbnb_filters', strict_slashes=False)
 def filters():
     """Display a HTML page like 6-index.html"""

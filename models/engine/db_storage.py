@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from sqlalchemy import create_engine, ForeignKey, Column, Table
+from sqlalchemy import create_engine, ForeignKey, Column, Table, String
 from sqlalchemy.orm import relationship
 from models.state import State
 from models.user import User
@@ -13,11 +13,12 @@ from urllib.parse import quote_plus
 from models.base_model import Base
 
 
-# Define relationships
-State.cities = relationship(City, back_populates="states")
+State.cities = relationship(City, cascade="all, delete",
+                            back_populates="states")
 
 City.states = relationship(State, back_populates="cities")
-City.places = relationship(Place, back_populates="cities")
+City.places = relationship(Place, cascade="all, delete",
+                           back_populates="cities")
 
 User.places = relationship(Place, back_populates="users",
                            cascade="all, delete")
@@ -33,10 +34,12 @@ Review.places = relationship(Place, back_populates="reviews")
 
 
 place_amenity = Table('place_amenity', Base.metadata,
-                      Column('place_id',
-                             ForeignKey('places.id'), primary_key=True),
-                      Column('amenity_id',
-                             ForeignKey('amenities.id'), primary_key=True))
+                      Column('place_id',String(60),
+                             ForeignKey('places.id'), primary_key=True,
+                             nullable=False),
+                      Column('amenity_id', String(60),
+                             ForeignKey('amenities.id'), primary_key=True,
+                             nullable=False))
 Place.amenities = relationship("Amenity",
                                secondary=place_amenity,
                                back_populates="place_amenities",
@@ -45,7 +48,6 @@ Amenity.place_amenities = relationship("Place",
                                        secondary=place_amenity,
                                        back_populates="amenities",
                                        viewonly=False)
-
 
 class DBStorage:
     """Database Storage to be used instead of FileStorage"""
@@ -70,19 +72,17 @@ class DBStorage:
 
     def all(self, cls=None):
         """Query on the current database session"""
-        dict_obj = {}
-        if cls is not None:
-            all_cls = self.__session.query(cls).all()
-            for obj in all_cls:
-                dict_obj.update({f"{obj.__class__.__name__}.{obj.id}": obj})
+        objs = None
+        if cls is None:
+            objs = self.__session.query()
         else:
-            allState = self.__session.query(State).all()
-            allCity = self.__session.query(City).all()
-            for obj in allState, allCity:
-                for sub_obj in obj:
-                    dict_obj.update({f"{sub_obj.__class__.__name__}"
-                                     f".{sub_obj.id}": sub_obj})
-        return dict_obj
+            objs = self.__session.query(cls)
+        dct = {}
+
+        for obj in objs:
+            key = obj.to_dict()['__class__'] + '.' + obj.id
+            dct[key] = obj
+        return dct
 
     def new(self, obj):
         """ Adds the obj to the current database session(self.__session)"""
