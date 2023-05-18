@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 """
-A script that starts a Flask Web app with the folowing:
-List the states and cities list
+This module provides a script for starting a Flask web application.
+The web application listens on the IP address 0.0.0.0 and port 5000.
+It utilizes a storage engine (either FileStorage or DBStorage)
+to fetch data from a data source. The module ensures that the SQLAlchemy
+session is properly handled and closed after each request.
 """
 
 
